@@ -4,17 +4,22 @@ from __future__ import print_function
 import re
 import json
 
-# https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-# http://stackoverflow.com/a/13436167/96656
-def unisymbol(codePoint):
-	if codePoint >= 0x0000 and codePoint <= 0xFFFF:
-		return unichr(codePoint)
-	elif codePoint >= 0x010000 and codePoint <= 0x10FFFF:
-		highSurrogate = int((codePoint - 0x10000) / 0x400) + 0xD800
-		lowSurrogate = int((codePoint - 0x10000) % 0x400) + 0xDC00
-		return unichr(highSurrogate) + unichr(lowSurrogate)
-	else:
-		return 'Error'
+try:
+	unichr
+except NameError:
+	unisymbol = chr
+else:
+	# https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+	# http://stackoverflow.com/a/13436167/96656
+	def unisymbol(codePoint):
+		if codePoint >= 0x0000 and codePoint <= 0xFFFF:
+			return unichr(codePoint)
+		elif codePoint >= 0x010000 and codePoint <= 0x10FFFF:
+			highSurrogate = int((codePoint - 0x10000) / 0x400) + 0xD800
+			lowSurrogate = int((codePoint - 0x10000) % 0x400) + 0xDC00
+			return unichr(highSurrogate) + unichr(lowSurrogate)
+		else:
+			return 'Error'
 
 def hexify(codePoint):
 	return 'U+' + hex(codePoint)[2:].upper().zfill(6)
