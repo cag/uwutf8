@@ -368,12 +368,34 @@
 			Error,
 			'Error: invalid UTF-8 detected'
 		);
+		equal(
+			utf8.decode('\uFFFF', { strict: false }),
+			'\uFFFD',
+			'Decoding non-byte char in string'
+		);
+		raises(
+			function() {
+				utf8.decode('\x9F\x90\xE2');
+			},
+			Error,
+			'Error: Invalid UTF-8 detected'
+		)
+		equal(
+			utf8.decode('\x9F\x90\xE2', { strict: false }),
+			'\uFFFD\uFFFD\uFFFD',
+			'Decoding invalid UTF-8'
+		);
 		raises(
 			function() {
 				utf8.decode('\xE9\x00\x00');
 			},
 			Error,
-			'Error: invalid continuation byte (4-byte sequence expected)'
+			'Error: invalid continuation byte (2-byte sequence expected)'
+		);
+		equal(
+			utf8.decode('\xE9\x00\x00', { strict: false }),
+			'\uFFFD\x00',
+			'Decoding invalid continuation byte (2-byte sequence expected)'
 		);
 		raises(
 			function() {
@@ -382,12 +404,22 @@
 			Error,
 			'Error: invalid continuation byte'
 		);
+		equal(
+			utf8.decode('\xC2\uFFFF', { strict: false }),
+			'\uFFFD',
+			'Decoding invalid continuation byte'
+		);
 		raises(
 			function() {
 				utf8.decode('\xF0\x9D');
 			},
 			Error,
 			'Error: invalid byte index'
+		);
+		equal(
+			utf8.decode('\xF0\x9D', { strict: false }),
+			'\uFFFD',
+			'Decoding invalid byte index'
 		);
 
 		// Argument type checking
