@@ -1,21 +1,5 @@
-/*! https://mths.be/utf8js v2.1.2 by @mathias */
+/*! https://mths.be/utf8js v3.0.0 by @mathias */
 ;(function(root) {
-
-	// Detect free variables `exports`
-	var freeExports = typeof exports == 'object' && exports;
-
-	// Detect free variable `module`
-	var freeModule = typeof module == 'object' && module &&
-		module.exports == freeExports && module;
-
-	// Detect free variable `global`, from Node.js or Browserified code,
-	// and use it as `root`
-	var freeGlobal = typeof global == 'object' && global;
-	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
-		root = freeGlobal;
-	}
-
-	/*--------------------------------------------------------------------------*/
 
 	var stringFromCharCodeFn = String.fromCharCode;
 	var identifyFn = function(value) { return value; };
@@ -67,13 +51,17 @@
 		return output;
 	}
 
-	function checkScalarValue(codePoint) {
+	function checkScalarValue(codePoint, strict) {
 		if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
-			throw Error(
-				'Lone surrogate U+' + codePoint.toString(16).toUpperCase() +
-				' is not a scalar value'
-			);
+			if (strict) {
+				throw Error(
+					'Lone surrogate U+' + codePoint.toString(16).toUpperCase() +
+					' is not a scalar value'
+				);
+			}
+			return false;
 		}
+		return true;
 	}
 	/*--------------------------------------------------------------------------*/
 
@@ -81,7 +69,7 @@
 		return stringFromCharCodeOrIdentityFn(((codePoint >> shift) & 0x3F) | 0x80);
 	}
 
-	function encodeCodePoint(codePoint) {
+	function encodeCodePoint(codePoint, strict) {
 		if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
 			return stringFromCharCodeOrIdentityFn(codePoint);
 		}
@@ -90,7 +78,9 @@
 			symbol.push(stringFromCharCodeOrIdentityFn(((codePoint >> 6) & 0x1F) | 0xC0));
 		}
 		else if ((codePoint & 0xFFFF0000) == 0) { // 3-byte sequence
-			checkScalarValue(codePoint);
+			if (!checkScalarValue(codePoint, strict)) {
+				codePoint = 0xFFFD;
+			}
 			symbol.push(stringFromCharCodeOrIdentityFn(((codePoint >> 12) & 0x0F) | 0xE0));
 			symbol.push(createByte(codePoint, 6));
 		}
@@ -103,7 +93,10 @@
 		return symbol;
 	}
 
-	function utf8Encode(string) {
+	function utf8Encode(string, opts) {
+		opts = opts || {};
+		var strict = false !== opts.strict;
+
 		var codePoints = ucs2decode(string);
 		var length = codePoints.length;
 		var index = -1;
@@ -111,27 +104,27 @@
 		var byteArray = [];
 		while (++index < length) {
 			codePoint = codePoints[index];
-			byteArray = byteArray.concat(encodeCodePoint(codePoint));
+			byteArray = byteArray.concat(encodeCodePoint(codePoint, strict));
 		}
 		return byteArray;
 	}
 
-	function utf8EncodeToByteString(string) {
+	function utf8EncodeToByteString(string, opts) {
 		if(typeof(string) !== 'string') {
 			throw new Error('Invalid argument type. Expected string.');
 		}
 		stringFromCharCodeOrIdentityFn = stringFromCharCodeFn;
-		var byteArray = utf8Encode(string);
+		var byteArray = utf8Encode(string, opts);
 		var byteString = byteArray.join('');
 		return byteString;
 	}
 
-	function utf8EncodeToByteArray(string) {
+	function utf8EncodeToByteArray(string, opts) {
 		if(typeof(string) !== 'string') {
 			throw new Error('Invalid argument type. Expected string.');
 		}
 		stringFromCharCodeOrIdentityFn = identifyFn;
-		return utf8Encode(string);
+		return utf8Encode(string, opts);
 	}
 
 	function utf8EncodeToUint8Array(string) {
@@ -159,7 +152,7 @@
 		throw Error('Invalid continuation byte');
 	}
 
-	function decodeSymbol() {
+	function decodeSymbol(strict) {
 		var byte1;
 		var byte2;
 		var byte3;
@@ -200,8 +193,7 @@
 			byte3 = readContinuationByte();
 			codePoint = ((byte1 & 0x0F) << 12) | (byte2 << 6) | byte3;
 			if (codePoint >= 0x0800) {
-				checkScalarValue(codePoint);
-				return codePoint;
+				return checkScalarValue(codePoint, strict) ? codePoint : 0xFFFD;
 			} else {
 				throw Error('Invalid continuation byte');
 			}
@@ -225,67 +217,45 @@
 	var byteArray;
 	var byteCount;
 	var byteIndex;
-	function utf8Decode() {
+	function utf8Decode(strict) {
 		stringFromCharCodeOrIdentityFn = stringFromCharCodeFn;
+
 		byteCount = byteArray.length;
 		byteIndex = 0;
 		var codePoints = [];
 		var tmp;
-		while ((tmp = decodeSymbol()) !== false) {
+		while ((tmp = decodeSymbol(strict)) !== false) {
 			codePoints.push(tmp);
 		}
 		return ucs2encode(codePoints);
 	}
 
-	function utf8DecodeString(byteString) {
+	function utf8DecodeString(byteString, opts) {
 		if(typeof(byteString) !== 'string') {
 			throw new Error('Invalid argument type. Expected string.');
 		}
 		byteArray = ucs2decode(byteString);
-		return utf8DecodeArray(byteArray);
+		return utf8DecodeArray(byteArray, opts);
 	}
 
-	function utf8DecodeArray(bArray) {
+	function utf8DecodeArray(bArray, opts) {
+		opts = opts || {};
+		var strict = false !== opts.strict;
+
 		if(!Array.isArray(bArray) && !(bArray instanceof Uint8Array)) {
 			throw new Error('Invalid argument type. Expected array or Uint8Array');
 		}
 		byteArray = bArray;
-		return utf8Decode();
+		return utf8Decode(strict);
 	}
 
 	/*--------------------------------------------------------------------------*/
 
-	var utf8 = {
-		'version': '2.1.2',
-		'encode': utf8EncodeToByteString,
-		'encodeToArray': utf8EncodeToByteArray,
-		'encodeToUint8Array': utf8EncodeToUint8Array,
-		'decode': utf8DecodeString,
-		'decodeArray': utf8DecodeArray
-	};
+	root.version = '3.0.0';
+	root.encode = utf8EncodeToByteString;
+	root.encodeToArray = utf8EncodeToByteArray;
+	root.encodeToUint8Array = utf8EncodeToUint8Array;
+	root.decode = utf8DecodeString;
+	root.decodeArray = utf8DecodeArray;
 
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (
-		typeof define == 'function' &&
-		typeof define.amd == 'object' &&
-		define.amd
-	) {
-		define(function() {
-			return utf8;
-		});
-	}	else if (freeExports && !freeExports.nodeType) {
-		if (freeModule) { // in Node.js or RingoJS v0.8.0+
-			freeModule.exports = utf8;
-		} else { // in Narwhal or RingoJS v0.7.0-
-			var object = {};
-			var hasOwnProperty = object.hasOwnProperty;
-			for (var key in utf8) {
-				hasOwnProperty.call(utf8, key) && (freeExports[key] = utf8[key]);
-			}
-		}
-	} else { // in Rhino or a web browser
-		root.utf8 = utf8;
-	}
-
-}(this));
+}(typeof exports === 'undefined' ? this.utf8 = {} : exports));

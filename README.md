@@ -12,70 +12,51 @@ Via [npm](https://www.npmjs.com/):
 npm install utf8
 ```
 
-Via [Bower](http://bower.io/):
-
-```bash
-bower install utf8
-```
-
-Via [Component](https://github.com/component/component):
-
-```bash
-component install mathiasbynens/utf8.js
-```
-
 In a browser:
 
 ```html
 <script src="utf8.js"></script>
 ```
 
-In [Narwhal](http://narwhaljs.org/), [Node.js](https://nodejs.org/), and [RingoJS ≥ v0.8.0](http://ringojs.org/):
+In [Node.js](https://nodejs.org/):
 
 ```js
-var utf8 = require('utf8');
-```
-
-In [Rhino](http://www.mozilla.org/rhino/):
-
-```js
-load('utf8.js');
-```
-
-Using an AMD loader like [RequireJS](http://requirejs.org/):
-
-```js
-require(
-  {
-    'paths': {
-      'utf8': 'path/to/utf8'
-    }
-  },
-  ['utf8'],
-  function(utf8) {
-    console.log(utf8);
-  }
-);
+const utf8 = require('utf8');
 ```
 
 ## API
 
-### `utf8.encode(string)`
+### `utf8.encode(string, opts)`
 
-Encodes any given JavaScript string (`string`) as UTF-8, and returns the UTF-8-encoded version of the string. It throws an error if the input string contains a non-scalar value, i.e. a lone surrogate. (If you need to be able to encode non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
+Encodes any given JavaScript string (`string`) as UTF-8 (the `opts` object being optional), and returns the UTF-8-encoded version of the string. It throws an error if the input string contains a non-scalar value, i.e. a lone surrogate. (If you need to be able to encode non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
+
+Available options:
+
+* `strict`: whether encountering a lone surrogate should throw an error (defaults to `true`). Else, each lone surrogate is replaced by the character U+FFFD.
 
 ```js
 // U+00A9 COPYRIGHT SIGN; see http://codepoints.net/U+00A9
 utf8.encode('\xA9');
 // → '\xC2\xA9'
 // U+10001 LINEAR B SYLLABLE B038 E; see http://codepoints.net/U+10001
+
 utf8.encode('\uD800\uDC01');
 // → '\xF0\x90\x80\x81'
+
+utf8.encode('\uDC00');
+// → throws 'Lone surrogate is not a scalar value' error
+
+utf8.encode('\uDC00', { strict: false });
+// → '\xEF\xBF\xBD'
 ```
 
-### `utf8.decode(byteString)`
+### `utf8.decode(byteString, opts)`
 
-Decodes any given UTF-8-encoded string (`byteString`) as UTF-8, and returns the UTF-8-decoded version of the string. It throws an error when malformed UTF-8 is detected. (If you need to be able to decode encoded non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
+Decodes any given UTF-8-encoded string (`byteString`) as UTF-8 (the `opts` object being optional), and returns the UTF-8-decoded version of the string. It throws an error when malformed UTF-8 is detected. (If you need to be able to decode encoded non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
+
+Available options:
+
+* `strict`: whether encountering a non-scalar value should throw an error (defaults to `true`). Else, each non-scalar value is decoded as U+FFFD.
 
 ```js
 utf8.decode('\xC2\xA9');
@@ -84,6 +65,12 @@ utf8.decode('\xC2\xA9');
 utf8.decode('\xF0\x90\x80\x81');
 // → '\uD800\uDC01'
 // → U+10001 LINEAR B SYLLABLE B038 E
+
+utf8.decode('\xED\xB0\x80');
+// → throws 'Lone surrogate is not a scalar value' error
+
+utf8.decode('\xED\xB0\x80', { strict: false });
+// → '\uFFFD'
 ```
 
 ### `utf8.version`
