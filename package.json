@@ -1,6 +1,6 @@
 {
 	"name": "uwutf8",
-	"version": "3.0.1",
+	"version": "3.0.2",
 	"description": "A well-tested UTF-8 encoder/decoder written in JavaScript.",
 	"homepage": "https://mths.be/utf8js",
 	"main": "uwutf8.js",
