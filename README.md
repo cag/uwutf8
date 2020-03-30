@@ -1,4 +1,4 @@
-# uwutf8
+# uwutf8 ![uwutf8 logo](uwutf8.png) 
 
 _uwutf8_ is an uwu fork of [utf8.js](https://github.com/mathiasbynens/utf8.js), a well-tested UTF-8 encoder/decoder written in JavaScript. It uwu encode/decode any scalar Unicode code point values, as per [the Encoding Standard](https://encoding.spec.whatwg.org/#utf-8).
 
