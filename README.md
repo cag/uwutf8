@@ -1,6 +1,6 @@
-# utf8.js [![Build status](https://travis-ci.org/mathiasbynens/utf8.js.svg?branch=master)](https://travis-ci.org/mathiasbynens/utf8.js) [![Code coverage status](http://img.shields.io/coveralls/mathiasbynens/utf8.js/master.svg)](https://coveralls.io/r/mathiasbynens/utf8.js) [![Dependency status](https://gemnasium.com/mathiasbynens/utf8.js.svg)](https://gemnasium.com/mathiasbynens/utf8.js)
+# uwutf8
 
-_utf8.js_ is a well-tested UTF-8 encoder/decoder written in JavaScript. Unlike many other JavaScript solutions, it is designed to be a _proper_ UTF-8 encoder/decoder: it can encode/decode any scalar Unicode code point values, as per [the Encoding Standard](https://encoding.spec.whatwg.org/#utf-8). [Here’s an online demo.](https://mothereff.in/utf-8)
+_uwutf8_ is an uwu fork of [utf8.js](https://github.com/mathiasbynens/utf8.js), a well-tested UTF-8 encoder/decoder written in JavaScript. It uwu encode/decode any scalar Unicode code point values, as per [the Encoding Standard](https://encoding.spec.whatwg.org/#utf-8).
 
 Feel free to fork if you see possible improvements!
 
@@ -9,26 +9,26 @@ Feel free to fork if you see possible improvements!
 Via [npm](https://www.npmjs.com/):
 
 ```bash
-npm install utf8
+npm install uwutf8
 ```
 
 In a browser:
 
 ```html
-<script src="utf8.js"></script>
+<script src="uwutf8.js"></script>
 ```
 
 In [Node.js](https://nodejs.org/):
 
 ```js
-const utf8 = require('utf8');
+const uwutf8 = require('uwutf8');
 ```
 
 ## API
 
-### `utf8.encode(string, opts)`
+### `uwutf8.encode(string, opts)`
 
-Encodes any given JavaScript string (`string`) as UTF-8 (the `opts` object being optional), and returns the UTF-8-encoded version of the string. It throws an error if the input string contains a non-scalar value, i.e. a lone surrogate. (If you need to be able to encode non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
+Encodes any given JavaScript string (`string`) as UTF-8 (the `opts` object being optional), and returns the UTF-8-encoded version of the string. Depending on whether `strict` is set, it either throws an error if the input string contains a non-scalar value, i.e. a lone surrogate, or replaces that value with the character U+FFFD. (If you need to be able to encode non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
 
 Available options:
 
@@ -50,9 +50,9 @@ utf8.encode('\uDC00', { strict: false });
 // → '\xEF\xBF\xBD'
 ```
 
-### `utf8.decode(byteString, opts)`
+### `uwutf8.decode(byteString, opts)`
 
-Decodes any given UTF-8-encoded string (`byteString`) as UTF-8 (the `opts` object being optional), and returns the UTF-8-decoded version of the string. It throws an error when malformed UTF-8 is detected. (If you need to be able to decode encoded non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
+Decodes any given UTF-8-encoded string (`byteString`) as UTF-8 (the `opts` object being optional), and returns the UTF-8-decoded version of the string. If `strict` mode is set, it throws an error when malformed UTF-8 is detected. (If you need to be able to decode encoded non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
 
 Available options:
 
@@ -73,29 +73,31 @@ utf8.decode('\xED\xB0\x80', { strict: false });
 // → '\uFFFD'
 ```
 
-### `utf8.version`
+### `uwutf8.version`
 
 A string representing the semantic version number.
 
 ## Support
 
-utf8.js has been tested in at least Chrome 27-39, Firefox 3-34, Safari 4-8, Opera 10-28, IE 6-11, Node.js v0.10.0, Narwhal 0.3.2, RingoJS 0.8-0.11, PhantomJS 1.9.0, and Rhino 1.7RC4.
+uwutf8 has tests. uwu
 
 ## Unit tests & code coverage
 
 After cloning this repository, run `npm install` to install the dependencies needed for development and testing. You may want to install Istanbul _globally_ using `npm install istanbul -g`.
 
-Once that’s done, you can run the unit tests in Node using `npm test` or `node tests/tests.js`. To run the tests in Rhino, Ringo, Narwhal, PhantomJS, and web browsers as well, use `grunt test`.
+Once that’s done, you can run the unit tests in Node using `npm test` or `node tests/tests.js`.
 
-To generate the code coverage report, use `grunt cover`.
+To run the tests in Rhino, Ringo, Narwhal, PhantomJS, and web browsers as well, use `grunt test`. At least I think this works but I haven't tried it.
+
+To generate the code coverage report, use `grunt cover`. Also I have no idea how to do this.
 
 ## FAQ
 
-### Why is the first release named v2.0.0? Haven’t you heard of [semantic versioning](http://semver.org/)?
+### Why is the first release named v3.0.0? Haven’t you heard of [semantic versioning](http://semver.org/)?
 
-Long before utf8.js was created, the `utf8` module on npm was registered and used by another (slightly buggy) library. @ryanmcgrath was kind enough to give me access to the `utf8` package on npm when I told him about utf8.js. Since there has already been a v1.0.0 release of the old library, and to avoid breaking backwards compatibility with projects that rely on the `utf8` npm package, I decided the tag the first release of utf8.js as v2.0.0 and take it from there.
+:3
 
-## Author
+## OG
 
 | [![twitter/mathias](https://gravatar.com/avatar/24e08a9ea84deb17ae121074d0f17125?s=70)](https://twitter.com/mathias "Follow @mathias on Twitter") |
 |---|
@@ -103,4 +105,4 @@ Long before utf8.js was created, the `utf8` module on npm was registered and use
 
 ## License
 
-utf8.js is available under the [MIT](https://mths.be/mit) license.
+uwutf8 is available under the [MIT](https://mths.be/mit) license. I actually dunno what I'm supposed to do here now that I've forked it.
