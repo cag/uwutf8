@@ -42,17 +42,17 @@ Available options:
 
 ```js
 // U+00A9 COPYRIGHT SIGN; see http://codepoints.net/U+00A9
-utf8.encode('\xA9');
+uwutf8.encode('\xA9');
 // → '\xC2\xA9'
 // U+10001 LINEAR B SYLLABLE B038 E; see http://codepoints.net/U+10001
 
-utf8.encode('\uD800\uDC01');
+uwutf8.encode('\uD800\uDC01');
 // → '\xF0\x90\x80\x81'
 
-utf8.encode('\uDC00');
+uwutf8.encode('\uDC00');
 // → throws 'Lone surrogate is not a scalar value' error
 
-utf8.encode('\uDC00', { strict: false });
+uwutf8.encode('\uDC00', { strict: false });
 // → '\xEF\xBF\xBD'
 ```
 
@@ -71,17 +71,17 @@ Available options:
 * `strict`: whether encountering a non-scalar value should throw an error (defaults to `true`). Else, each non-scalar value is decoded as U+FFFD.
 
 ```js
-utf8.decode('\xC2\xA9');
+uwutf8.decode('\xC2\xA9');
 // → '\xA9'
 
-utf8.decode('\xF0\x90\x80\x81');
+uwutf8.decode('\xF0\x90\x80\x81');
 // → '\uD800\uDC01'
 // → U+10001 LINEAR B SYLLABLE B038 E
 
-utf8.decode('\xED\xB0\x80');
+uwutf8.decode('\xED\xB0\x80');
 // → throws 'Lone surrogate is not a scalar value' error
 
-utf8.decode('\xED\xB0\x80', { strict: false });
+uwutf8.decode('\xED\xB0\x80', { strict: false });
 // → '\uFFFD'
 ```
 
