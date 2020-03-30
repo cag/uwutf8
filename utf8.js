@@ -127,11 +127,11 @@
 		return utf8Encode(string, opts);
 	}
 
-	function utf8EncodeToUint8Array(string) {
+	function utf8EncodeToUint8Array(string, opts) {
 		if(typeof(string) !== 'string') {
 			throw new Error('Invalid argument type. Expected string.');
 		}
-		return Uint8Array.from(utf8EncodeToByteArray(string));
+		return Uint8Array.from(utf8EncodeToByteArray(string, opts));
 	}
 
 	/*--------------------------------------------------------------------------*/
