@@ -26,7 +26,13 @@ const uwutf8 = require('uwutf8');
 
 ## API
 
-### `uwutf8.encode(string, opts)`
+### Encoding
+
+Forms available:
+
+* `uwutf8.encode(string, opts)`
+* `uwutf8.encodeAsArray(string, opts)`
+* `uwutf8.encodeAsUint8Array(string, opts)`
 
 Encodes any given JavaScript string (`string`) as UTF-8 (the `opts` object being optional), and returns the UTF-8-encoded version of the string. Depending on whether `strict` is set, it either throws an error if the input string contains a non-scalar value, i.e. a lone surrogate, or replaces that value with the character U+FFFD. (If you need to be able to encode non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
 
@@ -50,9 +56,15 @@ utf8.encode('\uDC00', { strict: false });
 // → '\xEF\xBF\xBD'
 ```
 
-### `uwutf8.decode(byteString, opts)`
+## Decoding
 
-Decodes any given UTF-8-encoded string (`byteString`) as UTF-8 (the `opts` object being optional), and returns the UTF-8-decoded version of the string. If `strict` mode is set, it throws an error when malformed UTF-8 is detected. (If you need to be able to decode encoded non-scalar values as well, use [WTF-8](https://mths.be/wtf8) instead.)
+Forms available:
+
+* `uwutf8.decode(byteString, opts)`
+* `uwutf8.decodeArray(array, opts)`
+
+
+Decodes any given bytes sequence (`byteString` being a String containing the bytes, and `array` being an Array or Uint8Array of the bytes) as UTF-8 (the `opts` object being optional), and returns the UTF-8-decoded version of the string. If `strict` mode is set, it throws an error when malformed UTF-8 is detected.
 
 Available options:
 
