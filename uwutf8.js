@@ -167,6 +167,8 @@
 			return false;
 		}
 
+		var startingByteIndex = byteIndex;
+
 		// Read first byte
 		byte1 = byteArray[byteIndex] & 0xFF;
 		byteIndex++;
@@ -215,6 +217,7 @@
 			throw Error('Invalid UTF-8 detected');
 		} catch (e) {
 			if (strict) throw e;
+			byteIndex = startingByteIndex + 1;
 		}
 		return 0xFFFD;
 	}

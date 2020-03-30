@@ -375,14 +375,14 @@
 		);
 		raises(
 			function() {
-				utf8.decode('\x9F\x90\xE2');
+				utf8.decode('\x9F\x90\xE2Retained');
 			},
 			Error,
 			'Error: Invalid UTF-8 detected'
 		)
 		equal(
-			utf8.decode('\x9F\x90\xE2', { strict: false }),
-			'\uFFFD\uFFFD\uFFFD',
+			utf8.decode('\x9F\x90\xE2Retained', { strict: false }),
+			'\uFFFD\uFFFD\uFFFDRetained',
 			'Decoding invalid UTF-8'
 		);
 		raises(
@@ -394,7 +394,7 @@
 		);
 		equal(
 			utf8.decode('\xE9\x00\x00', { strict: false }),
-			'\uFFFD\x00',
+			'\uFFFD\x00\x00',
 			'Decoding invalid continuation byte (2-byte sequence expected)'
 		);
 		raises(
@@ -406,7 +406,7 @@
 		);
 		equal(
 			utf8.decode('\xC2\uFFFF', { strict: false }),
-			'\uFFFD',
+			'\uFFFD\uFFFD',
 			'Decoding invalid continuation byte'
 		);
 		raises(
@@ -418,7 +418,7 @@
 		);
 		equal(
 			utf8.decode('\xF0\x9D', { strict: false }),
-			'\uFFFD',
+			'\uFFFD\uFFFD',
 			'Decoding invalid byte index'
 		);
 
