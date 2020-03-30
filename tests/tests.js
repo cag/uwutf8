@@ -24,7 +24,7 @@
 
 	/** The `utf8` object to test */
 	var utf8 = root.utf8 || (root.utf8 = (
-		utf8 = load('../utf8.js') || root.utf8,
+		utf8 = load('../uwutf8.js') || root.utf8,
 		utf8 = utf8.utf8 || utf8
 	));
 
@@ -271,7 +271,7 @@
 
 	// explicitly call `QUnit.module()` instead of `module()`
 	// in case we are in a CLI environment
-	QUnit.module('utf8.js');
+	QUnit.module('uwutf8.js');
 
 	test('encode/decode', function() {
 		forEach(data, function(object) {

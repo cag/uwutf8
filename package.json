@@ -1,9 +1,9 @@
 {
-	"name": "utf8",
+	"name": "uwutf8",
 	"version": "3.0.0",
 	"description": "A well-tested UTF-8 encoder/decoder written in JavaScript.",
 	"homepage": "https://mths.be/utf8js",
-	"main": "utf8.js",
+	"main": "uwutf8.js",
 	"keywords": [
 		"charset",
 		"encoding",
@@ -17,12 +17,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/mathiasbynens/utf8.js.git"
+		"url": "https://github.com/cag/uwutf8.git"
 	},
-	"bugs": "https://github.com/mathiasbynens/utf8.js/issues",
+	"bugs": "https://github.com/cag/uwutf8/issues",
 	"files": [
 		"LICENSE-MIT.txt",
-		"utf8.js"
+		"uwutf8.js"
 	],
 	"scripts": {
 		"test": "node tests/tests.js",
